@@ -5,6 +5,9 @@ namespace DanielHe4rt\KickSDK\Events\Webhooks\Payloads;
 use DanielHe4rt\KickSDK\Events\Webhooks\Entities\KickWebhookEmoteEntity;
 use DanielHe4rt\KickSDK\Events\Webhooks\Entities\KickWebhookUserEntity;
 use DanielHe4rt\KickSDK\Events\Webhooks\Enums\KickWebhookEventTypeEnum;
+use DateTimeImmutable;
+use DateTimeInterface;
+use Exception;
 
 readonly class ChatMessageSentPayload extends KickWebhookPayload
 {
@@ -25,6 +28,7 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
         public KickWebhookUserEntity $sender,
         public string $content,
         public array $emotes,
+        public DateTimeInterface $createdAt,
     ) {
         parent::__construct($eventType, $eventVersion, $broadcaster);
     }
@@ -35,6 +39,8 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
      * @param  array  $data  The payload data
      * @param  KickWebhookEventTypeEnum  $eventType  The event type
      * @param  int  $eventVersion  The event version
+     *
+     * @throws Exception
      */
     public static function fromArray(array $data, KickWebhookEventTypeEnum $eventType, int $eventVersion): static
     {
@@ -54,6 +60,7 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
             sender: $sender,
             content: $data['content'],
             emotes: $emotes,
+            createdAt: new DateTimeImmutable($data['created_at']),
         );
     }
 
@@ -65,6 +72,7 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
             'sender' => $this->sender->jsonSerialize(),
             'content' => $this->content,
             'emotes' => $this->emotes,
+            'created_at' => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
         ];
     }
 }

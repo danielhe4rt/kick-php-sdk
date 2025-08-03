@@ -12,7 +12,7 @@ test('can create ChatMessageSentPayload with constructor', function () {
         username: 'broadcaster',
         isVerified: true,
         profilePicture: 'https://example.com/broadcaster.jpg',
-        channelSlug: 'broadcaster_channel'
+        channelSlug: 'broadcaster_channel',
     );
 
     $sender = new KickWebhookUserEntity(
@@ -36,7 +36,8 @@ test('can create ChatMessageSentPayload with constructor', function () {
         messageId: 'msg_123',
         sender: $sender,
         content: 'Hello world!',
-        emotes: [$emote]
+        emotes: [$emote],
+        createdAt: DateTimeImmutable::createFromFormat('Y-m-d', date('Y-m-d'))
     );
 
     expect($payload->eventType)->toBe(KickWebhookEventTypeEnum::ChatMessageSent)
@@ -157,7 +158,8 @@ test('can serialize ChatMessageSentPayload to array', function () {
         messageId: 'msg_123',
         sender: $sender,
         content: 'Hello world!',
-        emotes: [$emote]
+        emotes: [$emote],
+        createdAt: DateTimeImmutable::createFromFormat('Y-m-d', date('Y-m-d'))
     );
 
     $serialized = $payload->jsonSerialize();

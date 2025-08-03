@@ -79,5 +79,6 @@ test('can serialize KickWebhookUserEntity to array', function () {
         'is_verified' => true,
         'profile_picture' => 'https://example.com/avatar.jpg',
         'channel_slug' => 'test_channel',
+        'identity' => null, // identity is not set in this test
     ]);
 });

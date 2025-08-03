@@ -2,28 +2,27 @@
 
 namespace DanielHe4rt\KickSDK\Events\Webhooks\Payloads;
 
+use DanielHe4rt\KickSDK\Events\Webhooks\Entities\KickWebhookLivestreamMetadataEntity;
 use DanielHe4rt\KickSDK\Events\Webhooks\Entities\KickWebhookUserEntity;
 use DanielHe4rt\KickSDK\Events\Webhooks\Enums\KickWebhookEventTypeEnum;
 use DateTimeImmutable;
-use DateTimeInterface;
 
-readonly class ChannelSubscriptionGiftsPayload extends KickWebhookPayload
+readonly class LivestreamMetadataUpdatedPayload extends KickWebhookPayload
 {
     /**
      * @param  KickWebhookEventTypeEnum  $eventType  The type of event
      * @param  int  $eventVersion  The version of the event
      * @param  KickWebhookUserEntity  $broadcaster  The broadcaster information
-     * @param  KickWebhookUserEntity  $gifter  The gifter information (may be anonymous)
-     * @param  KickWebhookUserEntity[]  $giftees  Array of users who received the gift
-     * @param  DateTimeImmutable  $createdAt  When the gifts were sent
+     * @param  bool  $isLive  Whether the stream is live
+     * @param  string  $title  The stream title
+     * @param  DateTimeImmutable  $startedAt  When the stream started
+     * @param  DateTimeImmutable|null  $endedAt  When the stream ended (null if still live)
      */
     public function __construct(
         KickWebhookEventTypeEnum $eventType,
         int $eventVersion,
         KickWebhookUserEntity $broadcaster,
-        public KickWebhookUserEntity $gifter,
-        public array $giftees,
-        public DateTimeInterface $createdAt,
+        public KickWebhookLivestreamMetadataEntity $metadata
     ) {
         parent::__construct($eventType, $eventVersion, $broadcaster);
     }
@@ -38,22 +37,13 @@ readonly class ChannelSubscriptionGiftsPayload extends KickWebhookPayload
     public static function fromArray(array $data, KickWebhookEventTypeEnum $eventType, int $eventVersion): static
     {
         $broadcaster = KickWebhookUserEntity::fromArray($data['broadcaster']);
-        $gifter = KickWebhookUserEntity::fromArray($data['gifter']);
-
-        $giftees = [];
-        foreach ($data['giftees'] ?? [] as $gifteeData) {
-            $giftees[] = KickWebhookUserEntity::fromArray($gifteeData);
-        }
-
-        $createdAt = new DateTimeImmutable($data['created_at']);
+        $metadata = KickWebhookLivestreamMetadataEntity::fromArray($data['metadata']);
 
         return new self(
             eventType: $eventType,
             eventVersion: $eventVersion,
             broadcaster: $broadcaster,
-            gifter: $gifter,
-            giftees: $giftees,
-            createdAt: $createdAt,
+            metadata: $metadata
         );
     }
 
@@ -61,9 +51,7 @@ readonly class ChannelSubscriptionGiftsPayload extends KickWebhookPayload
     {
         return [
             'broadcaster' => $this->broadcaster->jsonSerialize(),
-            'gifter' => $this->gifter->jsonSerialize(),
-            'giftees' => array_map(fn (KickWebhookUserEntity $giftee) => $giftee->jsonSerialize(), $this->giftees),
-            'created_at' => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
+            'metadata' => $this->metadata->jsonSerialize(),
         ];
     }
 }

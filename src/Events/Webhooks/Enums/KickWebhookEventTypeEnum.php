@@ -11,6 +11,9 @@ enum KickWebhookEventTypeEnum: string
     case ChannelSubscriptionNew = 'channel.subscription.new';
     case LivestreamStatusUpdated = 'livestream.status.updated';
 
+    case LivestreamMetadataUpdated = 'livestream.metadata.updated';
+    case ModerationBanned = 'moderation.banned';
+
     /**
      * Get the event type from the header value
      */

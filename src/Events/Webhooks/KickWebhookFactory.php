@@ -9,6 +9,7 @@ use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChannelSubscriptionNewPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChannelSubscriptionRenewalPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChatMessageSentPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\KickWebhookPayload;
+use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\LivestreamMetadataUpdatedPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\LivestreamStatusUpdatedPayload;
 
 class KickWebhookFactory
@@ -34,6 +35,7 @@ class KickWebhookFactory
             KickWebhookEventTypeEnum::ChannelSubscriptionGifts => ChannelSubscriptionGiftsPayload::fromRequest($headers, $data),
             KickWebhookEventTypeEnum::ChannelSubscriptionNew => ChannelSubscriptionNewPayload::fromRequest($headers, $data),
             KickWebhookEventTypeEnum::LivestreamStatusUpdated => LivestreamStatusUpdatedPayload::fromRequest($headers, $data),
+            KickWebhookEventTypeEnum::LivestreamMetadataUpdated => LivestreamMetadataUpdatedPayload::fromRequest($headers, $data),
         };
     }
 }

@@ -11,8 +11,9 @@ readonly class KickWebhookUserEntity implements JsonSerializable
      * @param  int|null  $userId  User ID (null if anonymous)
      * @param  string|null  $username  Username (null if anonymous)
      * @param  bool|null  $isVerified  Whether the user is verified (null if anonymous)
-     * @param  string|null  $profilePicture  URL to the user's profile picture (null if anonymous)
+     * @param  string|null  $profilePicture  URL to the user's profile picture (null if anonymous)1
      * @param  string|null  $channelSlug  Channel slug (null if anonymous)
+     * @param  string|null  $identity  User identity (null if anonymous)
      */
     public function __construct(
         public bool $isAnonymous,
@@ -21,6 +22,7 @@ readonly class KickWebhookUserEntity implements JsonSerializable
         public ?bool $isVerified,
         public ?string $profilePicture,
         public ?string $channelSlug,
+        public ?string $identity = null,
     ) {}
 
     /**
@@ -35,6 +37,7 @@ readonly class KickWebhookUserEntity implements JsonSerializable
             isVerified: $data['is_verified'] ?? null,
             profilePicture: $data['profile_picture'] ?? null,
             channelSlug: $data['channel_slug'] ?? null,
+            identity: $data['identity'] ?? null,
         );
     }
 
@@ -47,6 +50,7 @@ readonly class KickWebhookUserEntity implements JsonSerializable
             'is_verified' => $this->isVerified,
             'profile_picture' => $this->profilePicture,
             'channel_slug' => $this->channelSlug,
+            'identity' => $this->identity,
         ];
     }
 }
