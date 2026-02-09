@@ -14,6 +14,8 @@ readonly class KickChannelEntity implements JsonSerializable
         public string $slug,
         public ?KickStreamEntity $stream,
         public string $stream_title,
+        public ?int $active_subscribers_count = null,
+        public ?int $canceled_subscribers_count = null,
     ) {}
 
     public static function fromArray(array $data): self
@@ -26,6 +28,8 @@ readonly class KickChannelEntity implements JsonSerializable
             slug: $data['slug'],
             stream: isset($data['stream']) ? KickStreamEntity::fromArray($data['stream']) : null,
             stream_title: $data['stream_title'],
+            active_subscribers_count: $data['active_subscribers_count'] ?? null,
+            canceled_subscribers_count: $data['canceled_subscribers_count'] ?? null,
         );
     }
 
@@ -39,6 +43,8 @@ readonly class KickChannelEntity implements JsonSerializable
             'slug' => $this->slug,
             'stream' => $this->stream?->jsonSerialize(),
             'stream_title' => $this->stream_title,
+            'active_subscribers_count' => $this->active_subscribers_count,
+            'canceled_subscribers_count' => $this->canceled_subscribers_count,
         ];
     }
 }

@@ -181,8 +181,12 @@ test('can serialize KickChannelEntity with stream', function () {
             'start_time' => '2023-01-01T12:00:00Z',
             'url' => 'https://example.com/stream',
             'viewer_count' => 1000,
+            'thumbnail' => null,
+            'custom_tags' => [],
         ],
         'stream_title' => 'Test Stream',
+        'active_subscribers_count' => null,
+        'canceled_subscribers_count' => null,
     ]);
 });
 
@@ -217,5 +221,7 @@ test('can serialize KickChannelEntity without stream', function () {
         'slug' => 'test_channel',
         'stream' => null,
         'stream_title' => 'Test Stream',
+        'active_subscribers_count' => null,
+        'canceled_subscribers_count' => null,
     ]);
 });

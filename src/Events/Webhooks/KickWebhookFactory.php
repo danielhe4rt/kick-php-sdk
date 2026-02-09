@@ -4,13 +4,16 @@ namespace DanielHe4rt\KickSDK\Events\Webhooks;
 
 use DanielHe4rt\KickSDK\Events\Webhooks\Enums\KickWebhookEventTypeEnum;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChannelFollowedPayload;
+use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChannelRewardRedemptionUpdatedPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChannelSubscriptionGiftsPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChannelSubscriptionNewPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChannelSubscriptionRenewalPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ChatMessageSentPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\KickWebhookPayload;
+use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\KicksGiftedPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\LivestreamMetadataUpdatedPayload;
 use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\LivestreamStatusUpdatedPayload;
+use DanielHe4rt\KickSDK\Events\Webhooks\Payloads\ModerationBannedPayload;
 
 class KickWebhookFactory
 {
@@ -36,6 +39,9 @@ class KickWebhookFactory
             KickWebhookEventTypeEnum::ChannelSubscriptionNew => ChannelSubscriptionNewPayload::fromRequest($headers, $data),
             KickWebhookEventTypeEnum::LivestreamStatusUpdated => LivestreamStatusUpdatedPayload::fromRequest($headers, $data),
             KickWebhookEventTypeEnum::LivestreamMetadataUpdated => LivestreamMetadataUpdatedPayload::fromRequest($headers, $data),
+            KickWebhookEventTypeEnum::ModerationBanned => ModerationBannedPayload::fromRequest($headers, $data),
+            KickWebhookEventTypeEnum::ChannelRewardRedemptionUpdated => ChannelRewardRedemptionUpdatedPayload::fromRequest($headers, $data),
+            KickWebhookEventTypeEnum::KicksGifted => KicksGiftedPayload::fromRequest($headers, $data),
         };
     }
 }

@@ -229,4 +229,24 @@ enum KickEventTypeEnum: string
      * }
      */
     case LivestreamStatusUpdated = 'livestream.status.updated';
+
+    /**
+     * Livestream Metadata Updated Event
+     */
+    case LivestreamMetadataUpdated = 'livestream.metadata.updated';
+
+    /**
+     * Moderation Banned Event
+     */
+    case ModerationBanned = 'moderation.banned';
+
+    /**
+     * Channel Reward Redemption Updated Event
+     */
+    case ChannelRewardRedemptionUpdated = 'channel.reward.redemption.updated';
+
+    /**
+     * Kicks Gifted Event
+     */
+    case KicksGifted = 'kicks.gifted';
 }

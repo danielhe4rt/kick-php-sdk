@@ -107,6 +107,71 @@ readonly class KickStreamResource
     }
 
     /**
+     * Get a channel by its slug
+     *
+     * @throws KickStreamException
+     */
+    public function getChannelBySlug(string $slug): KickChannelEntity
+    {
+        try {
+            $response = $this->client->get(self::CHANNELS_URI, [
+                'query' => ['slug' => $slug],
+                'headers' => ['Authorization' => 'Bearer '.$this->accessToken],
+            ]);
+        } catch (GuzzleException $e) {
+            match ($e->getCode()) {
+                Response::HTTP_UNAUTHORIZED => throw KickStreamException::missingScope(KickOAuthScopesEnum::CHANNEL_READ),
+                Response::HTTP_NOT_FOUND => throw KickStreamException::channelNotFound($slug),
+                default => throw KickStreamException::channelFetchFailed($e),
+            };
+        }
+
+        $responsePayload = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+
+        if (count($responsePayload['data']) === 0) {
+            throw KickStreamException::channelNotFound($slug);
+        }
+
+        return KickChannelEntity::fromArray($responsePayload['data'][0]);
+    }
+
+    /**
+     * Get multiple channels by their slugs
+     *
+     * @param  string[]  $slugs
+     * @return array<KickChannelEntity>
+     *
+     * @throws KickStreamException
+     * @throws JsonException
+     */
+    public function getChannelsBySlugs(array $slugs): array
+    {
+        try {
+            $response = $this->client->get(self::CHANNELS_URI, [
+                'query' => ['slug' => $slugs],
+                'headers' => ['Authorization' => 'Bearer '.$this->accessToken],
+            ]);
+        } catch (GuzzleException $e) {
+            match ($e->getCode()) {
+                Response::HTTP_UNAUTHORIZED => throw KickStreamException::missingScope(KickOAuthScopesEnum::CHANNEL_READ),
+                Response::HTTP_NOT_FOUND => throw KickStreamException::channelNotFound(implode(', ', $slugs)),
+                default => throw KickStreamException::channelFetchFailed($e),
+            };
+        }
+
+        $responsePayload = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+
+        if (count($responsePayload['data']) === 0) {
+            throw KickStreamException::channelNotFound(implode(', ', $slugs));
+        }
+
+        return array_map(
+            static fn (array $channel) => KickChannelEntity::fromArray($channel),
+            $responsePayload['data']
+        );
+    }
+
+    /**
      * Update the authenticated user's channel
      */
     public function updateChannel(UpdateChannelDTO $updateChannelDTO): bool

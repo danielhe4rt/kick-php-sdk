@@ -81,4 +81,49 @@ enum KickOAuthScopesEnum: string
      * @description Create and delete event subscriptions for your application.
      */
     case EVENTS_WRITE = 'events:write';
+
+    /**
+     * @scope moderation:ban
+     *
+     * @summary Ban/unban users
+     *
+     * @description Ban, timeout, and unban users in a channel.
+     */
+    case MODERATION_BAN = 'moderation:ban';
+
+    /**
+     * @scope moderation:chat_message:manage
+     *
+     * @summary Moderate chat messages
+     *
+     * @description Delete chat messages in a channel.
+     */
+    case MODERATION_CHAT_MESSAGE_MANAGE = 'moderation:chat_message:manage';
+
+    /**
+     * @scope channel:rewards:read
+     *
+     * @summary View channel point rewards
+     *
+     * @description View channel point rewards and redemptions.
+     */
+    case CHANNEL_REWARDS_READ = 'channel:rewards:read';
+
+    /**
+     * @scope channel:rewards:write
+     *
+     * @summary Manage channel point rewards
+     *
+     * @description Create, update, and delete channel point rewards. Accept or reject redemptions.
+     */
+    case CHANNEL_REWARDS_WRITE = 'channel:rewards:write';
+
+    /**
+     * @scope kicks:read
+     *
+     * @summary View KICKs leaderboard
+     *
+     * @description View KICKs leaderboard information.
+     */
+    case KICKS_READ = 'kicks:read';
 }

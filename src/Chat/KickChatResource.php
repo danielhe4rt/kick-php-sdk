@@ -46,4 +46,32 @@ readonly class KickChatResource
 
         return KickChatMessageEntity::fromArray($responsePayload['data']);
     }
+
+    /**
+     * Delete a chat message
+     *
+     * @param  string  $messageId  The UUID of the message to delete
+     * @return bool Whether the deletion was successful (204 No Content)
+     *
+     * @throws KickChatException
+     */
+    public function deleteMessage(string $messageId): bool
+    {
+        try {
+            $this->client->delete(self::CHAT_URI.'/'.$messageId, [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$this->accessToken,
+                ],
+            ]);
+        } catch (GuzzleException $e) {
+            match ($e->getCode()) {
+                Response::HTTP_UNAUTHORIZED => throw KickChatException::missingScope(KickOAuthScopesEnum::MODERATION_CHAT_MESSAGE_MANAGE),
+                Response::HTTP_FORBIDDEN => throw KickChatException::forbidden('You do not have permission to delete messages in this channel.'),
+                Response::HTTP_NOT_FOUND => throw KickChatException::messageNotFound($messageId),
+                default => throw KickChatException::messageDeleteFailed($e),
+            };
+        }
+
+        return true;
+    }
 }

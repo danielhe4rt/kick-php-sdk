@@ -47,4 +47,24 @@ class KickChatException extends InvalidArgumentException
 
         return new self(message: $message, code: 403);
     }
+
+    /**
+     * Create an exception for when a message deletion fails
+     */
+    public static function messageDeleteFailed(Throwable $exception): self
+    {
+        $message = sprintf('[Kick Chat Delete Failed] Context: %s', $exception->getMessage());
+
+        return new self(message: $message, code: $exception->getCode());
+    }
+
+    /**
+     * Create an exception for when a message is not found
+     */
+    public static function messageNotFound(string $messageId): self
+    {
+        $message = sprintf("[Kick Message Not Found] Message with ID '%s' was not found.", $messageId);
+
+        return new self(message: $message, code: 404);
+    }
 }

@@ -3,6 +3,7 @@
 namespace DanielHe4rt\KickSDK\Events\Webhooks\Payloads;
 
 use DanielHe4rt\KickSDK\Events\Webhooks\Entities\KickWebhookEmoteEntity;
+use DanielHe4rt\KickSDK\Events\Webhooks\Entities\KickWebhookReplyEntity;
 use DanielHe4rt\KickSDK\Events\Webhooks\Entities\KickWebhookUserEntity;
 use DanielHe4rt\KickSDK\Events\Webhooks\Enums\KickWebhookEventTypeEnum;
 use DateTimeImmutable;
@@ -19,6 +20,7 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
      * @param  KickWebhookUserEntity  $sender  The sender information
      * @param  string  $content  The message content
      * @param  KickWebhookEmoteEntity[]  $emotes  Array of emotes used in the message
+     * @param  KickWebhookReplyEntity|null  $repliesTo  The message being replied to
      */
     public function __construct(
         KickWebhookEventTypeEnum $eventType,
@@ -29,6 +31,7 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
         public string $content,
         public array $emotes,
         public DateTimeInterface $createdAt,
+        public ?KickWebhookReplyEntity $repliesTo = null,
     ) {
         parent::__construct($eventType, $eventVersion, $broadcaster);
     }
@@ -52,6 +55,10 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
             $emotes[] = KickWebhookEmoteEntity::fromArray($emoteData);
         }
 
+        $repliesTo = isset($data['replies_to']) && is_array($data['replies_to'])
+            ? KickWebhookReplyEntity::fromArray($data['replies_to'])
+            : null;
+
         return new self(
             eventType: $eventType,
             eventVersion: $eventVersion,
@@ -61,6 +68,7 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
             content: $data['content'],
             emotes: $emotes,
             createdAt: new DateTimeImmutable($data['created_at']),
+            repliesTo: $repliesTo,
         );
     }
 
@@ -73,6 +81,7 @@ readonly class ChatMessageSentPayload extends KickWebhookPayload
             'content' => $this->content,
             'emotes' => $this->emotes,
             'created_at' => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
+            'replies_to' => $this->repliesTo?->jsonSerialize(),
         ];
     }
 }

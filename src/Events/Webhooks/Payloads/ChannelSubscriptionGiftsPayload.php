@@ -16,6 +16,7 @@ readonly class ChannelSubscriptionGiftsPayload extends KickWebhookPayload
      * @param  KickWebhookUserEntity  $gifter  The gifter information (may be anonymous)
      * @param  KickWebhookUserEntity[]  $giftees  Array of users who received the gift
      * @param  DateTimeImmutable  $createdAt  When the gifts were sent
+     * @param  DateTimeImmutable|null  $expiresAt  When the gifted subscriptions expire
      */
     public function __construct(
         KickWebhookEventTypeEnum $eventType,
@@ -24,6 +25,7 @@ readonly class ChannelSubscriptionGiftsPayload extends KickWebhookPayload
         public KickWebhookUserEntity $gifter,
         public array $giftees,
         public DateTimeInterface $createdAt,
+        public ?DateTimeImmutable $expiresAt = null,
     ) {
         parent::__construct($eventType, $eventVersion, $broadcaster);
     }
@@ -46,6 +48,7 @@ readonly class ChannelSubscriptionGiftsPayload extends KickWebhookPayload
         }
 
         $createdAt = new DateTimeImmutable($data['created_at']);
+        $expiresAt = isset($data['expires_at']) ? new DateTimeImmutable($data['expires_at']) : null;
 
         return new self(
             eventType: $eventType,
@@ -54,6 +57,7 @@ readonly class ChannelSubscriptionGiftsPayload extends KickWebhookPayload
             gifter: $gifter,
             giftees: $giftees,
             createdAt: $createdAt,
+            expiresAt: $expiresAt,
         );
     }
 
@@ -64,6 +68,7 @@ readonly class ChannelSubscriptionGiftsPayload extends KickWebhookPayload
             'gifter' => $this->gifter->jsonSerialize(),
             'giftees' => array_map(fn (KickWebhookUserEntity $giftee) => $giftee->jsonSerialize(), $this->giftees),
             'created_at' => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
+            'expires_at' => $this->expiresAt?->format('Y-m-d\TH:i:s\Z'),
         ];
     }
 }

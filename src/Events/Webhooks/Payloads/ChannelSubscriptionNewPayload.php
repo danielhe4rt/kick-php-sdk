@@ -15,6 +15,7 @@ readonly class ChannelSubscriptionNewPayload extends KickWebhookPayload
      * @param  KickWebhookUserEntity  $subscriber  The subscriber information
      * @param  int  $duration  The subscription duration in months
      * @param  DateTimeImmutable  $createdAt  When the subscription was created
+     * @param  DateTimeImmutable|null  $expiresAt  When the subscription expires
      */
     public function __construct(
         KickWebhookEventTypeEnum $eventType,
@@ -23,6 +24,7 @@ readonly class ChannelSubscriptionNewPayload extends KickWebhookPayload
         public KickWebhookUserEntity $subscriber,
         public int $duration,
         public DateTimeImmutable $createdAt,
+        public ?DateTimeImmutable $expiresAt = null,
     ) {
         parent::__construct($eventType, $eventVersion, $broadcaster);
     }
@@ -39,6 +41,7 @@ readonly class ChannelSubscriptionNewPayload extends KickWebhookPayload
         $broadcaster = KickWebhookUserEntity::fromArray($data['broadcaster']);
         $subscriber = KickWebhookUserEntity::fromArray($data['subscriber']);
         $createdAt = new DateTimeImmutable($data['created_at']);
+        $expiresAt = isset($data['expires_at']) ? new DateTimeImmutable($data['expires_at']) : null;
 
         return new self(
             eventType: $eventType,
@@ -47,6 +50,7 @@ readonly class ChannelSubscriptionNewPayload extends KickWebhookPayload
             subscriber: $subscriber,
             duration: $data['duration'],
             createdAt: $createdAt,
+            expiresAt: $expiresAt,
         );
     }
 
@@ -57,6 +61,7 @@ readonly class ChannelSubscriptionNewPayload extends KickWebhookPayload
             'subscriber' => $this->subscriber->jsonSerialize(),
             'duration' => $this->duration,
             'created_at' => $this->createdAt->format('Y-m-d\TH:i:s\Z'),
+            'expires_at' => $this->expiresAt?->format('Y-m-d\TH:i:s\Z'),
         ];
     }
 }

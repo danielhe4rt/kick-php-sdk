@@ -65,5 +65,7 @@ test('can serialize KickStreamEntity to array', function () {
         'start_time' => '2023-01-01T12:00:00Z',
         'url' => 'https://example.com/stream',
         'viewer_count' => 1000,
+        'thumbnail' => null,
+        'custom_tags' => [],
     ]);
 });

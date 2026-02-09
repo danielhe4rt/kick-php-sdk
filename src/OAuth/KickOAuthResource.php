@@ -7,6 +7,7 @@ use DanielHe4rt\KickSDK\OAuth\DTOs\RedirectUrlDTO;
 use DanielHe4rt\KickSDK\OAuth\DTOs\RefreshTokenDTO;
 use DanielHe4rt\KickSDK\OAuth\DTOs\RevokeTokenDTO;
 use DanielHe4rt\KickSDK\OAuth\Entities\KickAccessTokenEntity;
+use DanielHe4rt\KickSDK\OAuth\Entities\KickAppAccessTokenEntity;
 use DanielHe4rt\KickSDK\OAuth\Entities\KickIntrospectTokenEntity;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -83,7 +84,7 @@ readonly class KickOAuthResource
     public function introspectToken(string $accessToken): KickIntrospectTokenEntity
     {
         try {
-            $response = $this->client->post('https://api.kick.com/public/v1/token/introspect', [
+            $response = $this->client->post('https://id.kick.com/oauth/token/introspect', [
                 'headers' => [
                     'Authorization' => 'Bearer '.$accessToken,
                 ],
@@ -93,6 +94,30 @@ readonly class KickOAuthResource
         }
 
         return KickIntrospectTokenEntity::fromArray(
+            json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR)
+        );
+    }
+
+    /**
+     * Get an App Access Token using Client Credentials flow
+     *
+     * @throws KickOAuthException
+     */
+    public function appAccessToken(): KickAppAccessTokenEntity
+    {
+        try {
+            $response = $this->client->post('https://id.kick.com/oauth/token', [
+                'form_params' => [
+                    'grant_type' => 'client_credentials',
+                    'client_id' => $this->clientId,
+                    'client_secret' => $this->clientSecret,
+                ],
+            ]);
+        } catch (GuzzleException $e) {
+            throw KickOAuthException::authenticationFailed($e->getMessage(), $e->getCode());
+        }
+
+        return KickAppAccessTokenEntity::fromArray(
             json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR)
         );
     }
